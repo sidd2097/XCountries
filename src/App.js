@@ -1,25 +1,40 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState, useEffect } from "react";
+import "./App.css";
+import CountryItem from "./components/CountryItem";
 
-function App() {
+const App = () => {
+  const [countries, setCountries] = useState([]);
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const fetchData = () => {
+    fetch("https://restcountries.com/v3.1/all")
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Filed to fetch country data");
+        }
+        return response.json();
+      })
+      .then((data) => {
+        setCountries(data);
+      })
+      .catch((error) => {
+        console.error(error.message);
+      });
+  };
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <h1>Country Flags</h1>
+      <div className="country-list">
+        {countries.map(country => (
+          <CountryItem key={country.cca2} country={country}/>
+        ))}
+      </div>
     </div>
   );
-}
+};
 
 export default App;
